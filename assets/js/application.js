@@ -9,8 +9,28 @@
     }
 
     Client.prototype.logEvent = function(handle, event) {
-      console.log('trigger', event, handle);
-      return this.log.push([handle, event, Date.now()]);
+      var message;
+      message = {
+        handle: handle.body.toString(),
+        vent: {
+          srcElement: event.srcElement.toString(),
+          type: event.type,
+          timestamp: event.timeStamp
+        }
+      };
+      console.log(message);
+      this.log.push(JSON.stringify(message));
+      if (this.log.length === 10) {
+        console.log("sending event");
+        $.ajax({
+          url: '/log_event',
+          method: 'GET',
+          data: {
+            log: JSON.stringify(this.log)
+          }
+        });
+        return this.log = [];
+      }
     };
 
     Client.prototype.registerLog = function(object, event) {

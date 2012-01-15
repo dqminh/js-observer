@@ -3,8 +3,23 @@ class Client
     @log = []
 
   logEvent: (handle, event) =>
-    console.log 'trigger', event, handle
-    @log.push [handle, event, Date.now()]
+    message  =
+      handle: handle.body.toString()
+      vent:
+        srcElement: event.srcElement.toString()
+        type: event.type
+        timestamp: event.timeStamp
+    console.log message
+    @log.push JSON.stringify(message)
+
+    if @log.length == 10
+      console.log "sending event"
+      $.ajax
+        url: '/log_event'
+        method: 'GET'
+        data:
+          log: JSON.stringify(@log)
+      @log = []
 
   registerLog: (object, event) ->
     object = object[0] if not _.isElement(object)
