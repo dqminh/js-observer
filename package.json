@@ -1,0 +1,6 @@
+{
+  "name": "js-observer",
+  "dependencies": {
+    "express": "2.5.6"
+  }
+}
